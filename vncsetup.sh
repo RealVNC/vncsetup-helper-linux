@@ -19,12 +19,12 @@ if [ $OS != "Linux" ]; then echo "This script supports Linux only. Sorry!"; exit
 	if type initctl list > /dev/null 2>&1; then SYSTEMD=0; INITD=1; CHKCONFIG=0; fi
 	if type chkconfig > /dev/null 2>&1; then SYSTEMD=0; INITD=0; CHKCONFIG=1; fi
 	if type systemctl > /dev/null 2>&1; then SYSTEMD=1; INITD=0; CHKCONFIG=0; else
-           SYSTEMD=0; INITD=0; CHKCONFIG=0; fi 
+           SYSTEMD=0; INITD=0; CHKCONFIG=0; fi
 
 #	echo "type: systemd: $SYSTEMD chkconfig: $CHKCONFIG init: $INITD"
-# on some systems, initctl doesn't exist but it is still init based. Handle this:       
+# on some systems, initctl doesn't exist but it is still init based. Handle this:
 	if [ $SYSTEMD == 0 ] && [ $INITD == 0 ] && [ $CHKCONFIG == 0 ] ; then INITD=1; fi
-# we need to work out if we're running on Ubuntu 14.04 as we have a special case for that: 
+# we need to work out if we're running on Ubuntu 14.04 as we have a special case for that:
 LSBRELEASE=`lsb_release -r | awk '{print $2}'`
 if [ $LSBRELEASE == "14.04" ]  && [ -d /usr/lib/systemd ]; then ubu1404; fi
 }
@@ -56,7 +56,7 @@ echo "4. Check/set up SELinux"
 echo "x. Exit"
 read mychoice
 case $mychoice  in
-1)licensing;; 
+1)licensing;;
 2)setupsvc;;
 3)setupvirtd;;
 4)setupselinux;;
@@ -86,7 +86,7 @@ echo "4. Sign in to your RealVNC account to activate subscription (Enterprise, P
 echo "5. Main menu"
 read mychoice
 case $mychoice  in
-1) /usr/bin/vnclicense -list; pressakey; licensing;; 
+1) /usr/bin/vnclicense -list; pressakey; licensing;;
 2) echo "Enter license key (available from Deployment page of your RealVNC account for VNC Connect):"; read KEY; /usr/bin/vnclicense -add $KEY; pressakey; licensing;;
 3) echo "Enter cloud connectivity token (available from Deployment page of your RealVNC account ):"; read CLOUDTOKEN; /usr/bin/vncserver-x11 -service -joinCloud $CLOUDTOKEN; pressakey; licensing;;
 4) echo "Starting licensing wizard"; /usr/bin/vnclicensewiz; pressakey; licensing;;
@@ -118,7 +118,7 @@ y) if [ $SYSTEMD == 1 ]; then systemctl enable vncserver-x11-serviced.service; f
         if [ $CHKCONFIG == 1 ]; then chkconfig --add vncserver-x11-serviced; fi
         if [ $INITD == 1 ]; then update-rc.d vncserver-x11-serviced defaults; fi
 	pressakey
-;; 
+;;
 *) echo "systemd config unchanged";;
 esac
 echo -e "Start VNC Server in Service Mode NOW (y/n)?"
@@ -134,24 +134,24 @@ menu
 
 function setupvirtd {
 echo "Setting up defaults for VNC Server in Virtual Mode daemon"
-/usr/bin/vncinitconfig -install-defaults 
-/usr/bin/vncinitconfig -pam 
+/usr/bin/vncinitconfig -install-defaults
+/usr/bin/vncinitconfig -pam
 /usr/bin/vncinitconfig -virtual-daemon
-clear 
+clear
 echo -e "Start VNC Server in Virtual Mode daemon at system boot (y/n)?"
 read vmdbootenable
 case $vmdbootenable in
-[yY]|[yY][eE][sS]) if [ $SYSTEMD == 1 ]; then systemctl enable vncserver-virtuald.service; fi 
-	if [ $CHKCONFIG == 1 ]; then chkconfig --add vncserver-virtuald; fi 
-	if [ $INITD == 1 ]; then $update-rc.d vncserver-virtuald defaults; fi 
+[yY]|[yY][eE][sS]) if [ $SYSTEMD == 1 ]; then systemctl enable vncserver-virtuald.service; fi
+	if [ $CHKCONFIG == 1 ]; then chkconfig --add vncserver-virtuald; fi
+	if [ $INITD == 1 ]; then $update-rc.d vncserver-virtuald defaults; fi
 	;;
 *) echo "startup config unchanged";;
 esac
 echo -e "Start VNC Server in Virtual Mode daemon NOW (y/n)?"
 read vmdstartnow
 case $vmdstartnow in
-[yY]|[yY][eE][sS]) if [ $SYSTEMD == 1 ]; then systemctl start vncserver-virtuald.service; fi 
-	if [ $INITD == 1 ]; then /etc/init.d/vncserver-virtuald start; echo "Connect to this computer on port 5999";fi;; 
+[yY]|[yY][eE][sS]) if [ $SYSTEMD == 1 ]; then systemctl start vncserver-virtuald.service; fi
+	if [ $INITD == 1 ]; then /etc/init.d/vncserver-virtuald start; echo "Connect to this computer on port 5999";fi;;
 *) echo "Not starting VNC Server in Virtual Mode daemon at this time";;
 esac
 clear
