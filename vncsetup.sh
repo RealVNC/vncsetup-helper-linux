@@ -86,7 +86,7 @@ function menu {
 	2)setupsvc;;
 	3)setupvirtd;;
 	4)setupselinux;;
-	x)exit 0;;
+	x)clear; exit 0;;
 	*) echo "select an option from 1 to 4"; clear; menu ;;
 	esac
 }
