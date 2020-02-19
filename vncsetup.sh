@@ -51,6 +51,26 @@ function ubu1404 {
 	exit
 }
 
+function disablewayland {
+	gdmconf=""
+	if [ -f "/etc/gdm3/custom.conf" ]; then gdmconf="/etc/gdm3/custom.conf"; fi
+	if [ -f "/etc/gdm/custom.conf" ]; then gdmconf="/etc/gdm/custom.conf"; fi
+	
+	if [ -n "$gdmconf" ]; then
+		if [ "$(grep -c "^#.*WaylandEnable=false" "$gdmconf")" -gt 0 ]; then
+			printf "\\nWould you like to disable Wayland? This is required to view the login screen. (y/n)\\n"
+			read "waylanddisable"
+			case "$waylanddisable" in
+				[yY]|[yY][eE][sS])
+					cp -a "$gdmconf" "$gdmconf.bak"
+					sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' "$gdmconf"
+					printf "\\nWayland disabled. Please reboot computer for this change to take effect.\\n\\n"
+				;;
+				*) printf "\\nWayland config unchanged\\n\\n";;
+			esac
+		fi
+	fi
+}
 
 function menu {
 	printf "\\nThe following options are available:\\n\\n"
@@ -144,6 +164,7 @@ function setupsvc {
 		;;
 		*) printf "\\nNot starting VNC Server in Service Mode at this time\\n";;
 	esac
+	disablewayland
 	pressakey
 	clear
 	menu
