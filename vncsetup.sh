@@ -37,8 +37,10 @@ function systemcheck {
 	# on some systems, initctl doesn't exist but it is still init based. Handle this:
 	if [ "$SYSTEMD" = 0 ] && [ "$INITD" = 0 ] && [ "$CHKCONFIG" = 0 ] ; then INITD=1; fi
 	# we need to work out if we're running on Ubuntu 14.04 as we have a special case for that:
-	LSBRELEASE="$(lsb_release -r | awk '{print $2}')" 2>/dev/null
-	if [ "$LSBRELEASE" = "14.04" ] && [ -d /usr/lib/systemd ]; then ubu1404; fi
+	if type lsb_release > /dev/null 2>&1; then
+		LSBRELEASE="$(lsb_release -r | awk '{print $2}')" 2>/dev/null
+		if [ "$LSBRELEASE" = "14.04" ] && [ -d /usr/lib/systemd ]; then ubu1404; fi
+	fi
 }
 
 function ubu1404 {
@@ -86,12 +88,12 @@ function enablesystemxorg {
 	
 	if [ "$majorversion" -ge 7 ]; then
 		printf "\\nWould you like to enable SystemXorg for VNC Virtual Mode? This is required for GNOME 3 based desktops. (y/n)\\n"
-		printf "This will install the xorg-x11-drv-dummy and xorg-x11-drv-void packages. (y/n)\\n"
+		printf "This will install the xorg-x11-drv-dummy and xorg-x11-drv-void packages.\\n"
 		read "systemxorgenable"
 		case "$systemxorgenable" in
 			[yY]|[yY][eE][sS])
 				yum install -y xorg-x11-drv-dummy xorg-x11-drv-void
-				/usr/bin/vncinitconfig --enable-system-xorg >/dev/null 2>&1
+				/usr/bin/vncinitconfig --enable-system-xorg
 				if grep -q "SystemXorg=1" "/etc/vnc/config.d/vncserver-virtual"; then
 					printf "\\SystemXorg successfully enabled.\\n\\n"
 				else
