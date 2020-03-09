@@ -95,9 +95,9 @@ function enablesystemxorg {
 				yum install -y xorg-x11-drv-dummy xorg-x11-drv-void
 				/usr/bin/vncinitconfig --enable-system-xorg
 				if grep -q "SystemXorg=1" "/etc/vnc/config.d/vncserver-virtual"; then
-					printf "\\SystemXorg successfully enabled.\\n\\n"
+					printf "\\nSystemXorg successfully enabled.\\n\\n"
 				else
-					printf "\\SystemXorg not enabled. Did you answer yes to all questions?\\n\\n"
+					printf "\\nSystemXorg not enabled. Did you answer yes to all questions?\\n\\n"
 				fi
 			;;
 			*) printf "\\nSystemXorg not enabled.\\n\\n";;
