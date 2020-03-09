@@ -38,7 +38,7 @@ function systemcheck {
 	if [ $SYSTEMD == 0 ] && [ $INITD == 0 ] && [ $CHKCONFIG == 0 ] ; then INITD=1; fi
 	# we need to work out if we're running on Ubuntu 14.04 as we have a special case for that:
 	LSBRELEASE=`lsb_release -r | awk '{print $2}'`
-	if [ $LSBRELEASE == "14.04" ]  && [ -d /usr/lib/systemd ]; then ubu1404; fi
+	if [ "$LSBRELEASE" = "14.04" ] && [ -d /usr/lib/systemd ]; then ubu1404; fi
 }
 
 function ubu1404 {
