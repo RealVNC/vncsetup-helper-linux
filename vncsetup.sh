@@ -35,9 +35,9 @@ function systemcheck {
 	else SYSTEMD=0; INITD=0; CHKCONFIG=0; fi
 	
 	# on some systems, initctl doesn't exist but it is still init based. Handle this:
-	if [ $SYSTEMD == 0 ] && [ $INITD == 0 ] && [ $CHKCONFIG == 0 ] ; then INITD=1; fi
+	if [ "$SYSTEMD" = 0 ] && [ "$INITD" = 0 ] && [ "$CHKCONFIG" = 0 ] ; then INITD=1; fi
 	# we need to work out if we're running on Ubuntu 14.04 as we have a special case for that:
-	LSBRELEASE=`lsb_release -r | awk '{print $2}'`
+	LSBRELEASE="$(lsb_release -r | awk '{print $2}')" 2>/dev/null
 	if [ "$LSBRELEASE" = "14.04" ] && [ -d /usr/lib/systemd ]; then ubu1404; fi
 }
 
@@ -84,7 +84,7 @@ function enablesystemxorg {
 	
 	majorversion="$(cat $releaseinfo | sed 's/.*release \(.*\) /\1/' | cut -f1 -d'.')"
 	
-	if [ "$majorversion" -gte 7 ]; then
+	if [ "$majorversion" -ge 7 ]; then
 		printf "\\nWould you like to enable SystemXorg for VNC Virtual Mode? This is required for GNOME 3 based desktops. (y/n)\\n"
 		printf "This will install the xorg-x11-drv-dummy and xorg-x11-drv-void packages. (y/n)\\n"
 		read "systemxorgenable"
