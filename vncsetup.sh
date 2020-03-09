@@ -72,6 +72,37 @@ function disablewayland {
 	fi
 }
 
+function enablesystemxorg {
+	releaseinfo=""
+	if [ -f "/etc/centos-release" ]; then 
+		releaseinfo="/etc/centos-release"
+	elif [ -f "/etc/redhat-release" ]; then 
+		releaseinfo="/etc/redhat-release"
+	else 
+		return 1
+	fi
+	
+	majorversion="$(cat $releaseinfo | sed 's/.*release \(.*\) /\1/' | cut -f1 -d'.')"
+	
+	if [ "$majorversion" -gte 7 ]; then
+		printf "\\nWould you like to enable SystemXorg for VNC Virtual Mode? This is required for GNOME 3 based desktops. (y/n)\\n"
+		printf "This will install the xorg-x11-drv-dummy and xorg-x11-drv-void packages. (y/n)\\n"
+		read "systemxorgenable"
+		case "$systemxorgenable" in
+			[yY]|[yY][eE][sS])
+				yum install -y xorg-x11-drv-dummy xorg-x11-drv-void
+				/usr/bin/vncinitconfig --enable-system-xorg >/dev/null 2>&1
+				if grep -q "SystemXorg=1" "/etc/vnc/config.d/vncserver-virtual"; then
+					printf "\\SystemXorg successfully enabled.\\n\\n"
+				else
+					printf "\\SystemXorg not enabled. Did you answer yes to all questions?\\n\\n"
+				fi
+			;;
+			*) printf "\\nSystemXorg not enabled.\\n\\n";;
+		esac
+	fi
+}
+
 function menu {
 	printf "\\nThe following options are available:\\n\\n"
 	echo "1. License VNC Server and enable cloud connectivity"
@@ -194,6 +225,7 @@ function setupvirtd {
 		;;
 		*) printf "\\nNot starting VNC Server in Virtual Mode daemon at this time\\n\\n";;
 	esac
+	enablesystemxorg
 	pressakey
 	clear
 	menu
