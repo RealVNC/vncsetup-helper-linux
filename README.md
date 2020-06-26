@@ -2,21 +2,13 @@ This vncsetup.sh script is designed to help users of RealVNC's VNC Server (6.x) 
 
 ### INSTRUCTIONS
 
-1.  Open a terminal window
+1.  On the computer running VNC Server, open a terminal window
 
-2.  Change directory to the download location of vncsetup.tar.gz, e.g.:
+2.  Run the below command
 ```sh
-cd ~/Downloads/
+cd ~/Downloads && curl --retry 3 "https://raw.githubusercontent.com/andrewwoodhouse/vncsetup-helper-linux/master/vncsetup.sh" -o vncsetup.sh && chmod 0755 vncsetup.sh
 ```
-3.  Uncompress and untar the tarball using:
-```sh
-tar xfz vncsetup.tar.gz
-```
-4.  Make the script executable:
-```sh
-sudo chmod u+x ./vncsetup.sh
-```
-5.  Execute the script:
+3.  Execute the script:
 ```sh
 sudo ./vncsetup.sh
 ```
