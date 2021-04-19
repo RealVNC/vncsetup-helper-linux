@@ -84,7 +84,7 @@ function enablesystemxorg {
 		return 1
 	fi
 	
-	majorversion="$(cat $releaseinfo | sed 's/.*release \(.*\) /\1/' | cut -f1 -d'.')"
+	majorversion="$(cat $releaseinfo | tr -dc '0-9.' | cut -f1 -d'.')"
 	
 	if [ "$majorversion" -ge 7 ]; then
 		printf "\\nWould you like to enable SystemXorg for VNC Virtual Mode? This is required for GNOME 3 based desktops. (y/n)\\n"
