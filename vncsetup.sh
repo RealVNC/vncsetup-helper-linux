@@ -84,7 +84,7 @@ function enablesystemxorg {
 		return 1
 	fi
 	
-	majorversion="$(cat $releaseinfo | sed 's/.*release \(.*\) /\1/' | cut -f1 -d'.')"
+	majorversion="$(cat $releaseinfo | tr -dc '0-9.' | cut -f1 -d'.')"
 	
 	if [ "$majorversion" -ge 7 ]; then
 		printf "\\nWould you like to enable SystemXorg for VNC Virtual Mode? This is required for GNOME 3 based desktops. (y/n)\\n"
@@ -151,9 +151,6 @@ function setupfirewall {
 	*) printf "\\nFirewall unchanged\\n\\n";;
 	esac
 	echo ""
-	pressakey
-	clear
-	menu
 }
 
 function setupselinux {
@@ -229,7 +226,7 @@ function setupsvc {
 		;;
 		*) printf "\\nNot starting VNC Server in Service Mode at this time\\n";;
 	esac
-	setupfirewall "svc"
+	setupfirewall svc
 	disablewayland
 	pressakey
 	clear
@@ -260,7 +257,7 @@ function setupvirtd {
 		;;
 		*) printf "\\nNot starting VNC Server in Virtual Mode daemon at this time\\n\\n";;
 	esac
-	setupfirewall "virtd"
+	setupfirewall virtd
 	enablesystemxorg
 	pressakey
 	clear
